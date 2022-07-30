@@ -5,7 +5,9 @@ const {
     updateUser,
     createPost,
     updatePost,
-    getPostsByUser
+    getPostsByUser,
+    getUserById,
+    getAllPosts
  } = require('./index');
 
  const dropTables = async () => {
@@ -88,6 +90,7 @@ const createInitialPosts = async () => {
     try {
         const [albert, sandra, glamgal] = await getAllUsers();
 
+        console.log("Starting to create posts...")
         await createPost({
             authorId: albert.id,
             title: "First Post",
@@ -145,6 +148,10 @@ const testDB = async () => {
     console.log("Result:", updateUserResult);
 
     console.log("Calling getAllPosts");
+    const posts = await getAllPosts();
+    console.log("Result:", posts);
+
+    console.log("Calling updatePost on posts[0]");
     const updatePostResult = await updatePost(posts[0].id, {
         title: "New Title",
         content: "Updated Content"
