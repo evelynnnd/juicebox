@@ -3,6 +3,29 @@ const postsRouter = express.Router();
 const { getAllPosts, createPost, updatePost, getPostById } = require('../db');
 const { requireUser } = require('./utils');
 
+postsRouter.get('/', async (req, res) => {
+    try{
+        const allPosts = await getAllPosts();
+
+        const posts = allPosts.filter(post => {
+            //if post is active, keep
+            if (post.active) {
+                return true;
+            }
+            //if post is not active but it belongs to a current user, keep
+            if (req.user && post.author.id === req.user.id) {
+                return true;
+            }
+            //none are true
+            return false;
+        })
+
+        res.send({ posts });
+    } catch ({ name, message }) {
+        next({ name, message })
+    }
+});
+
 postsRouter.post('/', requireUser, async (req, res, next) => {
   const { title, content, tags = "" } = req.body;
 
@@ -95,29 +118,6 @@ postsRouter.use((req, res, next) => {
     console.log("A request is being made to /posts");
   
     next();
-});
-
-postsRouter.get('/', async (req, res) => {
-    try{
-        const allPosts = await getAllPosts();
-
-        const posts = allPosts.filter(post => {
-            //if post is active, keep
-            if (post.active) {
-                return true;
-            }
-            //if post is not active but it belongs to a current user, keep
-            if (req.user && post.author.id === req.user.id) {
-                return true;
-            }
-            //none are true
-            return false;
-        })
-
-        res.send({ posts });
-    } catch ({ name, message }) {
-        next({ name, message })
-    }
 });
 
 module.exports = postsRouter;
