@@ -2,7 +2,9 @@
 const { Client } = require('pg');
 
 // providing location of the database
-const client = new Client(process.env.DATABASE_URL || 'postgres://localhost:5432/juicebox-dev');
+const client = new Client({connectionString: process.env.DATABASE_URL || 'postgres://localhost:5432/juicebox-dev',
+ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+});
 
 //create the function for the users.
 const createUser = async ({ username, password, name, location }) => {
@@ -19,7 +21,7 @@ const createUser = async ({ username, password, name, location }) => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 //gotta be able to update the current users.
 const updateUser = async (id, fields = {}) => {
@@ -45,7 +47,7 @@ const updateUser = async (id, fields = {}) => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 const getAllUsers = async () => {
     try {
@@ -58,7 +60,7 @@ const getAllUsers = async () => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 //gets users info and adds users post
 const getUserById = async (userId) => {
@@ -79,7 +81,7 @@ const getUserById = async (userId) => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 const createPost = async ({ 
     authorId, 
@@ -100,7 +102,7 @@ const createPost = async ({
     } catch (error) {
         throw error;
     }
-}
+};
 
 const updatePost = async (postId, fields = {}) => {
    const { tags } = fields;
@@ -145,7 +147,7 @@ const updatePost = async (postId, fields = {}) => {
         throw error;
     }
 
-}
+};
 
 const getAllPosts = async () => {
     try {
@@ -162,7 +164,7 @@ const getAllPosts = async () => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 //get posts by using user info.
 const getPostsByUser = async (userId) => {
@@ -181,7 +183,7 @@ const getPostsByUser = async (userId) => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 const createTags = async (tagList) => {
     if (tagList.length === 0) {
@@ -215,7 +217,7 @@ const createTags = async (tagList) => {
       } catch (error) {
         throw error;
       }
-    }
+};
 
 const createPostTag = async (postId, tagId) => {
     try {
@@ -227,7 +229,7 @@ const createPostTag = async (postId, tagId) => {
       } catch (error) {
         throw error;
       }
-    }
+    };
 
 const addTagsToPost = async (postId, tagList) => {
     try {
@@ -241,7 +243,7 @@ const addTagsToPost = async (postId, tagList) => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 const getPostById = async (postId) => {
     try {
@@ -280,7 +282,7 @@ const getPostById = async (postId) => {
       } catch (error) {
         throw error;
       }
-}
+};
 
 const getPostsByTagName = async (tagName) => {
     try {
@@ -298,7 +300,7 @@ const getPostsByTagName = async (tagName) => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 const getAllTags = async () => {
     try {
@@ -311,7 +313,7 @@ const getAllTags = async () => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 const getUserByUsername = async (username) => {
     try {
@@ -325,7 +327,7 @@ const getUserByUsername = async (username) => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 //make sure to export ALL functions from here.
 module.exports = {
@@ -345,4 +347,4 @@ module.exports = {
     getPostsByTagName,
     getAllTags,
     getUserByUsername
-}
+};
